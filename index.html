@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Bitácora del Proyecto - Melodía</title>
+  <link rel="icon" type="image/png" href="assets/imgs/logo.png">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/dist/themes/core.min.css" />
+  <link id="theme-style" rel="stylesheet" href="">
+  <link rel="stylesheet" href="custom.css">
+</head>
+<body class="sidebar-chevron-left sidebar-toggle-chevron sidebar-group-box">
+  <div id="app">Cargando...</div>
+  <button id="toggle-theme">🌙 Dark</button>
+
+  <script>
+    window.$docsify = {
+      loadSidebar: true,
+      subMaxLevel: 2,
+      name: 'Bitácora - Melodía'
+    }
+  </script>
+
+  <script src="//cdn.jsdelivr.net/npm/docsify/dist/docsify.min.js"></script>
+  <script src="//unpkg.com/docsify-include-template/dist/docsify-include-template.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const btn = document.getElementById('toggle-theme');
+      const themeLink = document.getElementById('theme-style');
+      let dark = false;
+
+      btn.addEventListener('click', () => {
+        dark = !dark;
+        themeLink.href = dark
+          ? "//cdn.jsdelivr.net/npm/docsify/dist/themes/addons/core-dark.min.css"
+          : "";
+        btn.textContent = dark ? "☀️ Light" : "🌙 Dark";
+      });
+    });
+  </script>
+</body>
+</html>
