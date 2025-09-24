@@ -7,12 +7,12 @@ Bienvenido/a a la documentación final de **Melodía**, proyecto desarrollado pa
 Esta página funciona como una **bitácora interactiva** en la cual hay un registro completo de nuestro trabajo: desde las decisiones de arquitectura y diseño, hasta los desafíos que fuimos resolviendo, las lecciones aprendidas y algunas funcionalidades que nos hubiera gustado pulir un poco más.
 
 ### Integrantes
-- Aizen
-- Fran
-- Leticia Figueroa
-- Luna Dufour
-- Matías Bartellone
-- Thiago Pacheco
+- [Aizen Sanchez](https://github.com/AizenSanchez)
+- [Francisco López](https://github.com/flopeztancredi)
+- [Leticia Figueroa](https://github.com/leticiafrR)
+- [Luna Dufour](https://github.com/Lunit00ns)
+- [Matías Bartellone](https://github.com/MatiBartellone)
+- [Thiago Pacheco](https://github.com/thiagopservian)
 
 ---
 

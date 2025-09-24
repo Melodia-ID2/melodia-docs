@@ -8,6 +8,7 @@
   * [Problemas y Lecciones](/problemas.md)
   * [Testing y Calidad](/testing.md)
   
-* **Extras / Demos** 
+* **Extras / Demos**
+  * [Bitácoras](/bitacoras.md)
   * [Demos](/extras.md)
   * [Referencias](/referencias.md)
