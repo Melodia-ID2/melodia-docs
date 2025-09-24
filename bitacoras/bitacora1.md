@@ -54,9 +54,11 @@ Durante este checkpoint, el equipo debió tomar decisiones que no resultaron tri
 
 En relación con la historia de usuario de recuperación de contraseña, con el siguiente criterio de aceptación:
 
-> **[Restablecimiento de contraseña con enlace válido](https://ingenieria-del-software-2.github.io/tps/2025/2/tpgrupal/#recuperaci%c3%b3n-de-contrase%c3%b1a:~:text=CA%202%3A%20Restablecimiento%20de%20contrase%C3%B1a%20con%20enlace%20v%C3%A1lido)**
-> *Dado un usuario que hace clic en el enlace de restablecimiento de contraseña recibido por correo electrónico*
-> *Entonces se le presenta una página segura donde puede ingresar una nueva contraseña.*
+>* **Recuperación de contraseña: [Restablecimiento de contraseña con enlace válido](https://ingenieria-del-software-2.github.io/tps/2025/2/tpgrupal/#recuperaci%c3%b3n-de-contrase%c3%b1a:~:text=CA%202%3A%20Restablecimiento%20de%20contrase%C3%B1a%20con%20enlace%20v%C3%A1lido)**
+>
+>   * *Dado un usuario que hace clic en el enlace de restablecimiento de contraseña recibido por correo electrónico*
+>
+>   * *Entonces se le presenta una página segura donde puede ingresar una nueva contraseña.*
 
 El equipo decidió implementar la página segura para el restablecimiento de contraseña dentro del mismo dominio de la página web ya desplegada (la utilizada para el backoffice).
 
