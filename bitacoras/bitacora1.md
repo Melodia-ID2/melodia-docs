@@ -1,0 +1,41 @@
+# Bitácora 1
+
+## Alcance
+
+Inicialmente el grupo definió los siguientes objetivos para el checkpoint 1:
+
+- [x] Registro de usuarios
+- [x] Login de usuario con email y contraseña
+- [x] Catalogo - explorar y buscar contenido
+- [x] Visualización de perfil propio
+- [x] Edición de perfil
+- [x] Visualización de perfil de usuario
+- [x] Listado de usuarios del sistema
+- [ ] Creación y gestión de playlists
+
+Con el avance de las funcionalidades pactadas, se consensuó un cambio en el alcance inicialmente defindo: En vez de implementar la funcionalidad de creación y gestión de playlists, optamos por implementar diferentes funcionalidades que se complementen de mejor manera con las funcionalidades pactadas. En específico, se implementaron las siguintes funcionales:
+
+- [x] Bloquear usuario
+- [x] Recuperación de contraseña
+
+## Artefactos
+
+La plataforma consta de los siguientes artefactos:
+
+- Authentication service
+- Users service
+- Catalog service
+- Servidor web frontend de backoffice
+- Aplicación móvil para usuarios
+
+Cada uno de estos con los siguientes detalles:
+
+### Authentication service
+
+### Users service
+
+### Catalog service
+
+### Servidor web frontend de backoffice
+
+### Aplicación móvil para usuarios

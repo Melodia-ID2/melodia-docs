@@ -2,54 +2,18 @@
 
 Dedicaremos el siguiente apartado al reporte paulatino realizado a lo largo del desarrollo del proyecto, en particular, las siguiente subsecciones se abocan al registro realizado para cada checkpoint a lo largo del cuatrimestre:
 
-## Bitácora 1
+>[Bitácora 1](bitacoras/bitacora1.md)
 
-- duración: [28-08-2025 - 26-09-2025]
+- Duración: 28/08 - 26/09
 
-### Alcance
+>[Bitácora 2](bitacoras/bitacora2.md)
 
-Inicialmente el grupo definió los siguientes objetivos para el checkpoint 1:
+- Duración: 26/09 - 20/10
 
-- [ ] Registro de usuarios
-- [ ] Login de usuario con email y contraseña
-- [ ] Catalogo - explorar y buscar contenido
-- [ ] Visualización de perfil propio
-- [ ] Edición de perfil
-- [ ] Visualización de perfil de usuario
-- [ ] Listado de usuarios del sistema
-- [ ] Creación y gestión de playlists
+>[Bitácora 3](bitacoras/bitacora3.md)
 
-Con el avance de las funcionalidades pactadas, se consensuó un cambio en el alcance inicialmente defindo: En vez de implementar la funcionalidad de creación y gestión de playlists, optamos por implementar diferentes funcionalidades que se complementen de mejor manera con las funcionalidades pactadas. En específico, se implementaron las siguintes funcionales:
+- Duración: 20/10 - 13/11
 
-- [ ] Bloquear usuario
-- [ ] Recuperación de contraseña
+>[Bitácora 4](bitacoras/bitacora4.md)
 
-### Artefactos
-
-La plataforma consta de los siguientes artefactos:
-
-- Authentication service
-- Users service
-- Catalog service
-- Servidor web frontend de backoffice
-- Aplicación móvil para usuarios
-
-Cada uno de estos con los siguientes detalles:
-
-#### Authentication service
-
-#### Users service
-
-#### Catalog service
-
-#### Servidor web frontend de backoffice
-
-#### Aplicación móvil para usuarios
-
-### Desarrollo
-
-## Bitácora 2
-
-## Bitácora 3
-
-## Bitácora 4
+- Duración: 13/11 - 4/12
