@@ -91,6 +91,64 @@ flowchart LR
 
 ```
 
+## Diagramas de flujo
+
+Durante este primer checkpoint desarrollamos varios diagramas de flujo para guiarnos en el desarrollo de las distintas funcionalidades y asegurar que todos tuvieramos la misma base de entendimiento. Acá documentamos los principales flujos que ya están funcionando:
+
+### Registro de Usuario
+
+```mermaid
+sequenceDiagram
+    participant M as Mobile App
+    participant A as Auth Service
+    participant US as Users Service
+    participant DB as Postgres
+
+    Note over M: handleAuthRegister()
+    M->>A: POST /register {email, password, role}
+    A->>DB: Valida email único
+    alt Email ya existe
+        DB-->>A: Email duplicado
+        A-->>M: Error 404 (Bad Request)
+    else Email disponible
+        DB-->>A: OK
+        A->>DB: Crea usuario en auth DB
+        DB-->>A: Usuario creado
+        A->>A: Genera JWT tokens (access + refresh)
+        A-->>M: 201 {access_token, refresh_token}
+        M->>M: Almacena tokens en SecureStore
+    end
+    
+    Note over M: handleCreateAccount()
+    M->>US: POST /users/profile {full_name, username, ...}
+    Note over M,US: Header: Authorization Bearer <access_token>
+    US->>US: Valida token JWT
+    US->>DB: Crea perfil de usuario
+    alt Error creando perfil
+        DB-->>US: Error
+        US-->>M: Error 400
+    else Perfil creado exitosamente
+        DB-->>US: Perfil creado
+        US-->>M: 201 Created
+    end
+```
+
+Como mencionamos anteriormente, decidimos implementar dos microservicios separados: uno de **autenticación** y otro de **usuarios**. La separación de responsabilidades (por el momento) quedó definida así:
+
+- **Auth Service**: maneja todo lo relacionado con autenticación (login, logout, refresh tokens, recuperación de contraseña)
+- **Users Service**: gestiona perfiles de usuario, información personal y relaciones entre usuarios
+
+Esta arquitectura explica por qué el registro está dividido en dos endpoints. Desde la perspectiva del usuario final este proceso es transparente, pero internamente ocurre lo siguiente:
+
+1. **Primera llamada** a `POST /register` en el Auth Service con email, contraseña y rol
+2. **Si es exitosa**, se devuelve un `access_token` que debe incluirse como Authorization Header
+3. **Segunda llamada** a `POST /users/profile` en el Users Service para completar el perfil
+
+Una decisión importante fue incluir el **rol en el JWT**. Esto nos permite evitar consultas frecuentes a la base de datos para verificar permisos, ya que la validación de roles es algo que ocurre constantemente en el sistema.
+
+Durante el desarrollo de este checkpoint nos encontramos con algunos **desafíos con esta separación**. En varias ocasiones (especialmente para funcionalidades del backoffice/admin) hubiera sido más sencillo tener un solo microservicio. Sin embargo, decidimos mantener la separación porque creemos que cada servicio tiene responsabilidades bien definidas y diferentes, lo que nos facilitará el mantenimiento y escalabilidad a largo plazo.
+
+
 ## Decisiones técnicas
 
 Durante este checkpoint, el equipo debió tomar decisiones que no resultaron triviales. Estas requirieron un análisis previo, discusión interna y el consejo de los tutores. A continuación detallamos dos decisiones que consideramos relevantes.
