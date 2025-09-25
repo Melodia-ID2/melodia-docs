@@ -46,6 +46,51 @@ Componente encargada del proceso de autenticación de un usuario. Abarca respons
 
 ### Aplicación móvil para usuarios
 
+## Arquitectura inicial
+
+```mermaid
+flowchart LR
+  %% Clients
+  subgraph Clients["Clientes"]
+    Mobile["Mobile App<br/>(React Native)"]
+    WebUI["Backoffice<br/>(React)"]
+  end
+
+  %% Services grouped
+  subgraph PythonServices["Services (Python)"]
+    Auth["Auth Service<br/>(FastAPI)"]
+    Users["Users Service<br/>(FastAPI)"]
+  end
+
+  subgraph GoServices["Services (Go)"]
+    Catalog["Catalog Service<br/>(Go)"]
+  end
+  
+  Users --> Storage
+  %% Infra
+  Postgres[(Postgres)] 
+  Mongo[(MongoDB)]
+  Storage["Storage<br/>(Cloudinary / Supabase)"]
+
+
+
+  %% Edges
+  Mobile --> Auth
+  Mobile --> Catalog
+  Mobile --> Users
+  WebUI --> Auth
+  WebUI --> Users
+  WebUI --> Catalog
+
+  %% Service interactions
+
+  Catalog --> Mongo
+
+  Auth --> Postgres
+  Users --> Postgres
+
+```
+
 ## Decisiones técnicas
 
 Durante este checkpoint, el equipo debió tomar decisiones que no resultaron triviales. Estas requirieron un análisis previo, discusión interna y el consejo de los tutores. A continuación detallamos dos decisiones que consideramos relevantes.
