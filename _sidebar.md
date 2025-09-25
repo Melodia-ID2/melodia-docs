@@ -8,7 +8,14 @@
   * [Problemas y Lecciones](/problemas.md)
   * [Testing y Calidad](/testing.md)
   
+* [**Bitácoras**](/bitacoras.md)
+
+  * [Bitácora 1](/bitacoras/bitacora1.md)
+  * [Bitácora 2](/bitacoras/bitacora2.md)
+  * [Bitácora 3](/bitacoras/bitacora3.md)
+  * [Bitácora 4](/bitacoras/bitacora4.md)
+
+
 * **Extras / Demos**
-  * [Bitácoras](/bitacoras.md)
   * [Demos](/extras.md)
   * [Referencias](/referencias.md)

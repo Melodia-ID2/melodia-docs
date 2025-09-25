@@ -23,6 +23,14 @@
   <script src="//cdn.jsdelivr.net/npm/docsify/dist/docsify.min.js"></script>
   <script src="//unpkg.com/docsify-include-template/dist/docsify-include-template.js"></script>
 
+  <!-- Mermaid setup -->
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({ startOnLoad: true });
+    window.mermaid = mermaid;
+  </script>
+  <script src="//unpkg.com/docsify-mermaid@2.0.1/dist/docsify-mermaid.js"></script>
+
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const btn = document.getElementById('toggle-theme');
