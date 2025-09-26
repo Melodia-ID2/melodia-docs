@@ -135,8 +135,8 @@ sequenceDiagram
 
 Como mencionamos anteriormente, decidimos implementar dos microservicios separados: uno de **autenticación** y otro de **usuarios**. La separación de responsabilidades (por el momento) quedó definida así:
 
-- **Auth Service**: maneja todo lo relacionado con autenticación (login, logout, refresh tokens, recuperación de contraseña)
-- **Users Service**: gestiona perfiles de usuario, información personal y relaciones entre usuarios
+* **Auth Service**: maneja todo lo relacionado con autenticación (login, logout, refresh tokens, recuperación de contraseña)
+* **Users Service**: gestiona perfiles de usuario, información personal y relaciones entre usuarios
 
 Esta arquitectura explica por qué el registro está dividido en dos endpoints. Desde la perspectiva del usuario final este proceso es transparente, pero internamente ocurre lo siguiente:
 
@@ -147,7 +147,6 @@ Esta arquitectura explica por qué el registro está dividido en dos endpoints. 
 Una decisión importante fue incluir el **rol en el JWT**. Esto nos permite evitar consultas frecuentes a la base de datos para verificar permisos, ya que la validación de roles es algo que ocurre constantemente en el sistema.
 
 Durante el desarrollo de este checkpoint nos encontramos con algunos **desafíos con esta separación**. En varias ocasiones (especialmente para funcionalidades del backoffice/admin) hubiera sido más sencillo tener un solo microservicio. Sin embargo, decidimos mantener la separación porque creemos que cada servicio tiene responsabilidades bien definidas y diferentes, lo que nos facilitará el mantenimiento y escalabilidad a largo plazo.
-
 
 ## Decisiones técnicas
 
@@ -209,3 +208,25 @@ En consecuencia, la estrategia adoptada fue **mockear estas dependencias externa
 * Interactúe de forma adecuada con las APIs externas.
 
 De esta manera se mantiene la robustez de los tests sin depender de factores fuera de nuestro control.
+
+## Tecnologías empleadas
+
+* [copilot](https://github.com/copilot)
+* [docker](https://www.docker.com/)
+* dbeaver-ce (development local)
+* [mermaid live editor](https://mermaid.live/)
+* [swagger](https://swagger.io/)
+* [postman](https://www.postman.com/)
+* [supabase](https://supabase.com/) (postgres)
+* [cloudinary](https://cloudinary.com/) (storage)
+* [docker compose](https://docs.docker.com/compose/)
+* react and react-native
+* [nodejs](https://nodejs.org/es/)
+* [python](https://www.python.org/)
+* [golang](https://go.dev/)
+* [documentación de expo](https://docs.expo.dev/develop/tools/)
+* [fastapi](https://fastapi.tiangolo.com/)
+* [mongoDB Atlas](https://www.mongodb.com/es/products/platform/atlas-database)
+* [github pages](https://docs.github.com/es/pages) (documentación)
+* [google cloud](https://cloud.google.com/?hl=es_419) (deploy)
+* [vercel](https://vercel.com/) (deploy)
