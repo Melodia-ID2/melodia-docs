@@ -31,22 +31,120 @@ La plataforma está compuesta por los siguientes artefactos principales:
 Cada uno de estos desarrollado en su propio repositorio privado dentro de nuestra organización de GitHub ["Melodia-ID2"](https://github.com/Melodia-ID2). Cada uno de ellos se detalla a continuación:
 
 ### Authentication service
-<!-- 
-Componente encargada del proceso de autenticación de un usuario. Abarca responsabilidades como:
 
-* Generación del token JWT de acceso
-* Validación del token JWT de acceso
-* Generación de un token JWT de recuperación
-* Validación del token JWT de recuperación -->
+**Tecnología**: FastAPI (Python) + SQLModel + PostgreSQL
+
+Componente encargado del proceso de autenticación de usuarios. Maneja todas las operaciones relacionadas con:
+
+* **Autenticación**: Registro, login y logout de usuarios y administradores.
+* **Gestión de tokens**: Emisión y validación de tokens JWT para acceso y refresh.
+* **Recuperación de contraseña**: Generación y validación de tokens para restablecimiento de contraseña.
+* **Gestión de emails**: Envío de correos electrónicos para verificación de email y recuperación de contraseña.
+* **Bloqueo de usuarios**: Permite a los administradores bloquear y desbloquear cuentas de usuario.
+
 ### Users service
+
+**Tecnología**: FastAPI (Python) + SQLModel + PostgreSQL
+
+El Users Service es responsable de gestionar toda la información relacionada con los usuarios del sistema, incluyendo:
+
+* **Perfiles de usuario**: Creación, actualización y eliminación de perfiles de usuario.
+* **Gestión de fotos de perfiles**: Permite a los usuarios subir y actualizar sus fotos de perfil.
+* **Visualización de perfiles**: Permite a los usuarios ver su propio perfil y a los administradores ver los perfiles de todos los usuarios o de alguno en particular.
+* **Actualización de roles**: Permite a los administradores cambiar el rol de un usuario (de oyente a artista y viceversa).
+* **Validación de tokens**: Verifica la validez de los tokens JWT emitidos por el Auth Service.
 
 ### Catalog service
 
+El catalog Service es responsable de gestionar el contenido disponible en la plataforma, incluyendo:
+* **Visualización de contendio**: Permite al usuario administrador visualizar la información referente a cada canción, abarcando:
+  * El tipo
+  * El título
+  * El artista principal
+  * La colección,(para canciones) 
+  * El estado efectivo (programado/publicado/no-disponible-región/bloqueado-admin)
+  * La fecha de publicación.
+* **Bloqueo contenido**: Permite al administrador bloquear y debloquear canciones y colecciones.
+* **Detalle de contenido**: Permite al adminitrados abrir el detalle de una canción/contenido
+* **Edición de disponibilidad**: Permite al administrador modificar la lista de regiones donde el contenido se encuentra disponible, que actualmente conforma los metadatos editables de cada contenido.
+* **Búsqueda de contenido**: Permite al administrador buscar contenido por título, artista, colección. 
+* **Personalización de visualización de contenido**: Permite al administrador modificar las características del contenido que se le muestra, filtrando y/o ordenando por criterios generale o personalizados basados en las carcateristicas visualizables de los ítem mostrados.
+
 ### Servidor web frontend de backoffice
+
+**Tecnología**: Next.js (React) + TypeScript + TailwindCSS
+
+Componente web utilizado por los administradores para gestionar el sistema. Permite:
+
+* **Gestión de usuarios**: Visualización, bloqueo/desbloqueo y cambio de roles de usuarios.
+* **Gestión de catálogo**: Visualización, búsqueda y edición del contenido del catálogo del sistema.
+* **Autenticación**: Login para administradores con persistencia de sesión.
+
+**Características técnicas:**
+* Componentes reutilizables con TypeScript
+* Estilizado con Tailwind CSS
+* Deployed en Vercel
 
 ### Aplicación móvil para usuarios
 
-## Arquitectura inicial
+**Tecnología**: React Native + Expo + Typescript
+
+Aplicación móvil para Android para usuarios finales, con las siguientes funcionalidades:
+* **Autenticación**: Registro, login y logout de usuarios con validación de email y recuperación de contraseña.
+* **Perfil de usuario**: Visualización y edición de perfil propio, con subida de fotos para la foto de perfil.
+* **Navegación**: Stack y tab navigation con React Navigation.
+
+**Características técnicas:**
+- Desarrollo con Expo para facilitar el proceso de development.
+- Soporte para Android.
+
+## Arquitectura del sistema
+
+### Arquitectura interna de servicios
+
+**Backend (Arquitectura en capas)**:
+Todos los servicios backend siguen una arquitectura en capas bien definida que separa responsabilidades:
+
+- **Routers** (`/api`): Definición de endpoints y validación de entrada
+- **Controllers**: Manejo de requests HTTP, validación de autenticación/autorización  
+- **Services** (`/services`): Lógica de negocio y orquestación de operaciones
+- **Repositories** (`/repositories`): Acceso a datos y queries a la base de datos
+
+Esta separación facilita el testing, mantenimiento y escalabilidad de cada servicio.
+
+**Frontend (Convenciones React):**
+Tanto la aplicación móvil como el backoffice web siguen las convenciones estándar de React:
+
+- **Componentes funcionales** con hooks para manejo de estado
+- **Context API** para estado global (autenticación, tema, etc.)
+- **Custom hooks** para lógica reutilizable
+- **Separación de concerns** entre UI, lógica de negocio y llamadas a APIs
+
+### Componentes principales
+
+**Frontend:**
+- **Aplicación móvil**: React Native con Expo para usuarios finales
+- **Backoffice web**: Next.js con React para administradores
+
+**Backend (Microservicios):**
+- **Auth Service** (Python)
+- **Users Service** (Python)
+- **Catalog Service** (Go)
+
+**Infraestructura:**
+- **PostgreSQL**: Base de datos principal para Auth y Users services
+- **MongoDB Atlas**: Base de datos para el Catalog service
+- **Cloudinary**: Almacenamiento de imágenes (fotos de perfil)
+- **Google Cloud Platform**: Despliegue de servicios backend
+- **Vercel**: Despliegue del backoffice web
+
+### Comunicación entre servicios
+
+La comunicación es principalmente mediante API REST:
+- Los clientes (móvil y web) consumen directamente las APIs de cada serviciomediante middleware.
+- No hay comunicación directa entre microservicios.
+
+### Diagrama de arquitectura del sistema 
 
 ```mermaid
 flowchart LR

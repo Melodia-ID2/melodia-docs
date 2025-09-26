@@ -10,7 +10,7 @@ Al final del cuatrimestre, esta bitácora se va a convertir en la **documentaci�
 
 ### Integrantes
 - [Aizen Sanchez](https://github.com/AizenSanchez)
-- [Francisco López](https://github.com/flopeztancredi)
+- [Francisco López Tancredi](https://github.com/flopeztancredi)
 - [Leticia Figueroa](https://github.com/leticiafrR)
 - [Luna Dufour](https://github.com/Lunit00ns)
 - [Matías Bartellone](https://github.com/MatiBartellone)
