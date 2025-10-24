@@ -38,6 +38,7 @@ Para el *Checkpoint 2*, el grupo definió inicialmente los siguientes objetivos:
 * [x] [Reproducción] Reproducción On Demand  (agregada en sprint)
 
 Durante el desarrollo se decidió trasladar a Checkpoint 3 las historias que implican programacion de endpoints, ventanas de disponibilidad y la implementación completa del Home/Explorar, ya que requieren un servicio dedicado para orquestar eventos y ejecuciones a una determinada fecha.
+
 ---
 
 ## Artefactos
@@ -61,30 +62,68 @@ La plataforma está compuesta por los siguientes artefactos principales:
 
 * **Tecnología**: FastAPI (Python) + SQLModel + PostgreSQL
 
-El Playlists Service es responsable de gestionar las relaciones entre los usuarios y los items del catalogo para la creacion y persistencia de playlists
+El Playlists Service es responsable de gestionar las relaciones entre los usuarios y los items del catálogo para la creación y persistencia de playlists. Permite:
+
+* Crear, editar y eliminar playlists
+* Gestionar la relación entre usuarios y playlists (seguir, dejar de seguir)
+* Administrar el contenido de las playlists (agregar/eliminar canciones)
+* Obtener playlists por usuario o por ID
 
 ### Playback Service (`playback-service`)
 
-* **Tecnología**: Go + MongoDB
+* **Tecnología**: Go + MongoDB Atlas
 
-El Playback Service se encarga de controlar la reproduccion de cada usuario, guardando colas e historial
+El Playback Service se encarga de controlar la reproducción de cada usuario, ofreciendo:
+
+* Gestión de colas de reproducción
+* Historial de reproducción
+* Control de la posición actual de reproducción
+* Sincronización entre dispositivos
+
+**Endpoints principales**:
+- `POST /queue/{user_id}/enqueue`: Añade canciones a la cola
+- `GET /songs/{id}/playback`: Obtiene URL firmada para reproducción
+- `POST /queue/{user_id}/load`: Reemplaza la cola actual
 
 ### Metrics Service (`metrics-service`)
 
 * **Tecnología**: FastAPI (Python) + SQLModel + PostgreSQL
 
-Componente encargado de exponer eventos para registrar datos de la aplicacion para ser analizados o mostrados en otros servicios
+Servicio encargado de recolectar, procesar y exponer métricas de la plataforma:
+
+* **Seguimiento de reproducciones**: Registro de cada reproducción de canción
+* **Métricas de artistas**: Oyentes mensuales, ranking
+* **Actividad de usuarios**: Eventos como 'me gusta', 'guardar canción', 'seguir usuario'
+* **Estadísticas de retención**: Métricas de retención de usuarios
+* **Exportación de datos**: En formatos CSV y Excel
+
+**Endpoints principales**:
+- `GET /song-plays/{song_id}`: Reproducciones de una canción
+- `GET /monthly-listeners/{artist_id}`: Oyentes mensuales por artista
+- `GET /user-activity/{user_id}`: Actividad reciente del usuario
+- `GET /retention`: Métricas de retención de usuarios
 
 ### Router Service (`router-service` / API Gateway)
 
-* **Tecnología**: Traefik 
+* **Tecnología**: Traefik
 
-Enrutamiento hacia microservicios
+Punto de entrada unificado para todos los servicios de la plataforma:
 
+* **Enrutamiento inteligente**: Distribución de peticiones a los servicios
+* **Balanceo de carga**: Entre instancias de los servicios
+* **Terminación SSL**: Manejo centralizado de certificados
+* **Control de acceso**: Gestión de CORS y autenticación
 
 ### Search Service (`search-service`)
 
-* **Tecnología**: Typesense
+* **Tecnología**: Python + Typesense
+
+Motor de búsqueda que proporciona búsqueda rápida y relevante:
+
+* **Búsqueda unificada**: En canciones, artistas, álbumes y playlists
+* **Resultados ponderados**: Por relevancia según tipo de contenido
+* **Filtrado inteligente**: Según permisos y preferencias del usuario
+* **Actualización en tiempo real**: Sincronización con el catálogo principal
 
 
 
@@ -92,7 +131,74 @@ Enrutamiento hacia microservicios
 
 ## Arquitectura y diagramas (resumen)
 
+```mermaid
+flowchart LR
+    %% Clients
+    subgraph Clients["Clientes"]
+        Mobile["Mobile App<br/>(React Native)"]
+        WebUI["Backoffice<br/>(React)"]
+    end
 
+    %% API Gateway
+    subgraph Gateway["API Gateway (Traefik)"]
+        Traefik["Router Service"]
+    end
+
+    %% Services grouped
+    subgraph PythonServices["Services (Python)"]
+        Auth["Auth Service"]
+        Users["Users Service"]
+        Metrics["Metrics Service"]
+        Search["Search Service"]
+        Playlists["Playlists Service"]
+    end
+
+    subgraph GoServices["Services (Go)"]
+        Catalog["Catalog Service"]
+        Playback["Playback Service"]
+    end
+
+    %% Databases
+    subgraph Databases["Bases de Datos"]
+        Postgres[(PostgreSQL)] 
+        Mongo[(MongoDB Atlas)]
+        Typesense[(Typesense)]
+    end
+
+    %% External Services
+    subgraph External["Servicios Externos"]
+        Storage["Almacenamiento<br/>(Cloudinary/Supabase)"]
+    end
+
+    %% Edges - Client to Gateway
+    Mobile -->|HTTPS| Traefik
+    WebUI -->|HTTPS| Traefik
+
+    %% Edges - Gateway to Services
+    Traefik -->|/api/auth/*| Auth
+    Traefik -->|/api/users/*| Users
+    Traefik -->|/api/metrics/*| Metrics
+    Traefik -->|/api/catalog/*| Catalog
+    Traefik -->|/api/playback/*| Playback
+    Traefik -->|/api/search/*| Search
+    Traefik -->|/api/playlists/*| Playlists
+
+    %% Service to Database connections
+    Auth --> Postgres
+    Users --> Postgres
+    Metrics --> Postgres
+    Playlists --> Postgres
+    
+    Playback --> Mongo
+    Catalog --> Mongo
+    
+    Search --> Typesense
+    Catalog --> Typesense
+
+    %% External service connections
+    Users --> Storage
+    Catalog --> Storage
+```
 
 ## Decisiones técnicas tomadas en este checkpoint
 
