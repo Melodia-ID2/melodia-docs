@@ -175,13 +175,13 @@ flowchart LR
     WebUI -->|HTTPS| Traefik
 
     %% Edges - Gateway to Services
-    Traefik -->|/api/auth/*| Auth
-    Traefik -->|/api/users/*| Users
-    Traefik -->|/api/metrics/*| Metrics
-    Traefik -->|/api/catalog/*| Catalog
-    Traefik -->|/api/playback/*| Playback
-    Traefik -->|/api/search/*| Search
-    Traefik -->|/api/playlists/*| Playlists
+    Traefik -->|/auth*| Auth
+    Traefik -->|/users*| Users
+    Traefik -->|/metrics*| Metrics
+    Traefik -->|/catalog*| Catalog
+    Traefik -->|/playback*| Playback
+    Traefik -->|/search*| Search
+    Traefik -->|/playlists*| Playlists
 
     %% Service to Database connections
     Auth --> Postgres
