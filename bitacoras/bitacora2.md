@@ -193,7 +193,6 @@ flowchart LR
     Catalog --> Mongo
     
     Search --> Typesense
-    Catalog --> Typesense
 
     %% External service connections
     Users --> Storage
