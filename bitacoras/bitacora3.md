@@ -96,6 +96,7 @@ flowchart LR
     subgraph External["Servicios Externos"]
         Storage["Almacenamiento<br/>(Cloudinary/Supabase)"]
         Clouflare["Almacenamiento canciones y videos<br/>(Cloudflare)"]
+        Gcp["Scheduler y Queue<br/>(GCP)"]
     end
 
     %% Edges - Client to Gateway
@@ -128,6 +129,7 @@ flowchart LR
     Users --> Storage
     Catalog --> Storage
     Catalog --> Clouflare
+    Orchestrator --> Gcp
 ```
 
 ## Decisiones técnicas tomadas en este checkpoint
