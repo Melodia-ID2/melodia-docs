@@ -135,7 +135,7 @@ flowchart LR
 ## Decisiones técnicas tomadas en este checkpoint
 
 1. Introducción de orchestrator service.
-2. Para la programacion de publicacionde contenido, se programa un endpoint que intenta publicar. Esto es para que se pueda editar la fecha programada. Se edita la fecha en catalogo y llegada la fecha se recibe el endpoint programado que intenta publicar si la fecha programada es la correcta
-
+2. Para la programación de publicación de contenido, se programa un endpoint que intenta publicar. Esto es para que se pueda editar la fecha programada. Se edita la fecha en catalogo y llegada la fecha se recibe el endpoint programado que intenta publicar si la fecha programada es la correcta
+3. Para permitir que usuarios accedan a contenido específico a través de una url externa, se optó por usar deeplinks con un esquema personalizado. En particular, decidimos utilizar el dominio web de Melodia como intermediario para redirigir al usuario hacia vistas concretas de la aplicación. Esta solución se adoptó debido a políticas de seguridad de Google, que impiden devolver una redirección directamente desde el endpoint inicial, ya que no existe un mecanismo fiable para verificar si dicha redirección es maliciosa.
 ---
 
