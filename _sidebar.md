@@ -1,6 +1,6 @@
 * **Arquitectura**
 
-  * [Vista general](/arquitectura.md)
+  * [Vista general](diseño/arquitectura.md)
   * [Decisiones Técnicas](/decisiones.md)
   * [Tecnologías Usadas](/tecnologias.md)
 
