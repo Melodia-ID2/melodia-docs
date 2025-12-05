@@ -3,6 +3,7 @@
   * [Vista general](diseño/arquitectura.md)
   * [Decisiones Técnicas](/decisiones.md)
   * [Tecnologías Usadas](/tecnologias.md)
+  * [Informe Final](/informe-final.md)
 
 * **Servicios**
   * [Auth](servicios/auth.md)

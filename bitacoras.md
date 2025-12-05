@@ -14,6 +14,6 @@ Dedicaremos el siguiente apartado al reporte paulatino realizado a lo largo del 
 
 - Duración: 20/10 - 13/11
 
->[Bitácora 4](bitacoras/bitacora4.md)
+>[Bitácora 4](bitacoras/bitacora4.md) (Entrega Final)
 
-- Duración: 13/11 - 4/12
+- Duración: 13/11 - 5/12

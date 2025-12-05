@@ -146,3 +146,15 @@ Debido al gran tamaño de los modelos de voz (>400MB cada uno), se decidió no i
 *   **Lightning AI**: Infraestructura de GPU on-demand.
 *   **Google Cloud Run**: Hosting serverless.
 *   **Docker**: Estandarización del entorno complejo.
+
+---
+
+## Cierre de la entrega final
+
+Además del Cover Service, cerramos el resto de funcionalidades core del producto:
+
+- **Auto Play y Radio por canción**: Playback Service genera 15 sugerencias afines al finalizar la cola y radios efímeras desde una semilla, respetando preferencia de usuario.
+- **Made For You (Discover Weekly + Daily Mixes)**: Recommendations Service cachea mixes diarios/semanales, invalida por actividad (follow/like/play) y expone regeneración manual.
+- **Mood Mix (playlists temáticas)**: Playlists Service usa Gemini para puntuar canciones y mantener playlists estacionales; la app permite ocultarlas/mostrarlas.
+- **Videos musicales**: Playback entrega URLs presignadas de video desde R2; la app reproduce y muestra badge “Auto Play” cuando aplica.
+- **Onboarding y preferencias**: Mobile captura géneros, artistas y notificaciones/autoplay; Users Service guarda bitmask de preferencias y géneros favoritos.
