@@ -13,14 +13,18 @@ El servicio centraliza la información musical y expone una API RESTful para cre
 
 Además, incluye endpoints auxiliares para obtener géneros y regiones disponibles, y permite búsquedas y filtrados avanzados por texto, estado, región, rango de fechas, etc.
 
+**Documentación API (Swagger):** [https://catalog-809458893396.us-central1.run.app/swagger/index.html](https://catalog-809458893396.us-central1.run.app/swagger/index.html)
+
 ---
 
 ## Tecnologías Utilizadas
 - **Lenguaje:** Go  
 - **Framework:** Gin  
-- **Base de datos:** MongoDB  
+- **Base de datos:** MongoDB (Metadatos), PostgreSQL (Cuentas de usuario)
 - **Almacenamiento de objetos:** Cloudflare R2  
-- **Gestión de imágenes:** Cloudinary  
+- **Gestión de imágenes:** Cloudinary
+- **Inteligencia Artificial:** Google Gemini (Generación de metadatos y portadas)
+- **Reconocimiento de Audio:** ACRCloud
 
 ---
 
@@ -61,31 +65,56 @@ routes → handlers → services → repositories → database (MongoDB)
 El servicio corre en **Google Cloud Platform (GCP)** y se despliega automáticamente con **GitHub Actions** hacia **Cloud Run** (contenedores administrados). El workflow de CI/CD (deploy-cloudrun.yml) se ejecuta al hacer push a la rama main, construye la imagen Docker, la publica en **Artifact Registry** y despliega a Cloud Run. Las variables de entorno se inyectan desde **GitHub Secrets** a través de parámetros de despliegue.
 
 ### Variables de entorno (referencia)
-- DATABASE_URI, DATABASE_NAME
-- R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET
-- CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_URL
-- AUTH_SECRET, AUTH_ISSUER, AUTH_ALGORITHM
-- SEARCH_SERVICE_URL
-- ENVIRONMENT
+- **App**: `HOST`, `PORT`, `ENVIRONMENT`
+- **Database (MongoDB)**: `DATABASE_URI`, `DATABASE_NAME`
+- **Database (PostgreSQL)**: `DATABASE_SQL_HOST`, `DATABASE_SQL_NAME`, `DATABASE_SQL_USER`, `DATABASE_SQL_PASSWORD`, `DATABASE_SQL_PORT`
+- **R2 Storage**: `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`
+- **Cloudinary**: `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`, `CLOUDINARY_URL`
+- **Auth**: `AUTH_SECRET`, `AUTH_ISSUER`, `AUTH_ALGORITHM`
+- **AI & Recognition**: `GEMINI_API_KEY`, `ACRCLOUD_HOST`, `ACRCLOUD_ACCESS_KEY`, `ACRCLOUD_SECRET_KEY`
 
 Ejemplo (.env.example):
 ```
-DATABASE_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/
-DATABASE_NAME=catalog
-R2_ACCOUNT_ID=<account-id>
-R2_ACCESS_KEY_ID=<access-key>
-R2_SECRET_ACCESS_KEY=<secret-key>
-R2_BUCKET=catalog-audio
-CLOUDINARY_CLOUD_NAME=<cloud-name>
-CLOUDINARY_API_KEY=<api-key>
-CLOUDINARY_API_SECRET=<api-secret>
-CLOUDINARY_URL=cloudinary://<api-key>:<api-secret>@<cloud-name>
-AUTH_SECRET=<secret>
-AUTH_ISSUER=catalog-service
+# App
+HOST=0.0.0.0
+PORT=8080
+ENVIRONMENT=development
+
+# Database (MongoDB)
+DATABASE_URI=mongodb+srv://user:pass@cluster.mongodb.net/
+DATABASE_NAME=melodia_catalog
+
+# R2 Storage
+R2_ACCOUNT_ID=your_account_id
+R2_ACCESS_KEY_ID=your_access_key
+R2_SECRET_ACCESS_KEY=your_secret_key
+R2_BUCKET=melodia-tracks
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=cloud_name
+CLOUDINARY_API_KEY=api_key
+CLOUDINARY_API_SECRET=api_secret
+CLOUDINARY_URL=cloudinary_url
+
+# JWT Authentication
+AUTH_SECRET=dev-secret
+AUTH_ISSUER=auth-service
 AUTH_ALGORITHM=HS256
-SEARCH_SERVICE_URL=https://search-service.example.com
-ENVIRONMENT=production
+
+# PostgreSQL (for user accounts)
+DATABASE_SQL_HOST=localhost
+DATABASE_SQL_NAME=melodia
+DATABASE_SQL_USER=postgres
+DATABASE_SQL_PASSWORD=postgres
+DATABASE_SQL_PORT=5432
+
+# AI & Recognition
+GEMINI_API_KEY=your_gemini_key
+ACRCLOUD_HOST=identify-eu-west-1.acrcloud.com
+ACRCLOUD_ACCESS_KEY=your_acr_key
+ACRCLOUD_SECRET_KEY=your_acr_secret
 ```
+
 ### Servicios en la nube
 - **Cloud Run**: hospeda el contenedor (—allow-unauthenticated, control de auth a nivel aplicación).
 - **MongoDB Atlas**: base de datos gestionada.
@@ -123,37 +152,30 @@ Representa una canción con sus metadatos principales.
 | `regions` | array[string] | Regiones donde está disponible. |
 | `duration_ms` | integer | Duración en milisegundos. |
 | `has_video` | boolean | Indica si la canción tiene video asociado. |
+| `anticipated` | boolean | Indica si es un lanzamiento anticipado (pre-save/pre-release). |
 | `state` | string | Estado (por ejemplo: `Publicado`, `Bloqueado`). |
-| `cover` | string (URL) | Imagen de portada almacenada en Cloudinary. |
+| `cover_url` | string (URL) | Imagen de portada almacenada en Cloudinary. |
 | `published_at` | string (RFC3339) | Fecha de publicación. |
 | `created_at` | string (RFC3339) | Fecha de creación. |
 | `updated_at` | string (RFC3339) | Última actualización. |
 
 ---
 
-### SongUpdateRequest
-Objeto utilizado para actualizar una canción parcialmente.
-
-| Campo | Tipo | Descripción |
-|-------|------|--------------|
-| `regions` | array[string] | Lista actualizada de regiones. |
-| `track_number` | integer | Nuevo número de pista. |
-
----
-
 ### Collection
-Representa un conjunto de canciones  y sus metadatos.
+Representa un conjunto de canciones y sus metadatos (Álbum, Single, EP).
 
 | Campo | Tipo | Descripción |
 |-------|------|--------------|
 | `id` | string | Identificador único. |
 | `title` | string | Nombre de la colección. |
+| `type` | string | Tipo de colección (`album`, `single`, `compilation`). |
 | `description` | string | Descripción textual de la colección. |
-| `cover` | string (URL) | Imagen de portada en Cloudinary. |
+| `cover_url` | string (URL) | Imagen de portada en Cloudinary. |
 | `songs` | array[string] | IDs de canciones incluidas. |
-| `artist_id` | string | ID del artista principal. |
+| `artists_ids` | array[string] | IDs de los artistas principales. |
 | `state` | string | Estado de publicación. |
 | `regions` | array[string] | Regiones donde está disponible. |
+| `scheduled_date` | string (RFC3339) | Fecha programada para publicación futura. |
 | `created_at` | string | Fecha de creación. |
 | `updated_at` | string | Última modificación. |
 
@@ -164,7 +186,7 @@ Representa un género musical.
 
 | Campo | Tipo | Descripción |
 |-------|------|--------------|
-| `code` | string | Código identificador del género. |
+| `code` | string | Código identificador del género (ej. `POP`, `ROCK`). |
 | `name` | string | Nombre descriptivo del género. |
 
 ---
@@ -174,8 +196,20 @@ Representa una región o país donde una canción o colección está disponible.
 
 | Campo | Tipo | Descripción |
 |-------|------|--------------|
-| `code` | string | Código ISO del país o región. |
+| `code` | string | Código ISO del país o región (ej. `AR`, `US`). |
 | `name` | string | Nombre de la región. |
+| `level` | string | Nivel de la región (ej. `country`, `continent`). |
+
+---
+
+### ArtistPick
+Representa la "selección del artista" para mostrar en su perfil.
+
+| Campo | Tipo | Descripción |
+|-------|------|--------------|
+| `artist_id` | string | ID del artista. |
+| `collection_id` | string | ID de la colección destacada. |
+| `message` | string | Mensaje opcional del artista. |
 
 ---
 
@@ -195,13 +229,14 @@ Cada respuesta de error devuelve un objeto JSON con los siguientes campos:
 **Ejemplo:**
 ```json
 {
-  "type": "https://example.com/problems/invalid-parameter",
-  "title": "Invalid request parameter",
+  "type": "about:blank",
+  "title": "Bad request error",
   "status": 400,
-  "detail": "The field 'title' is required.",
+  "detail": "Invalid genre code: LATIN",
   "instance": "/songs"
 }
 ```
+
 ---
 
 ## Endpoints
@@ -213,23 +248,36 @@ Cada respuesta de error devuelve un objeto JSON con los siguientes campos:
 - **GET `/available-regions`**  
   Devuelve la lista de regiones disponibles (códigos y nombres).
 
+- **GET `/regions`**
+  Devuelve regiones organizadas por nivel jerárquico.
+
 ---
 
 ### Canciones (`/songs`)
 - **GET `/songs`**  
   Lista canciones con filtros de texto, estado, región, presencia de video, fechas de publicación, y ordenamiento.  
 - **POST `/songs`**  
-  Crea una nueva canción (metadatos + archivo).  
+  Crea una nueva canción (metadatos + archivo). (Requiere rol `artist` o `admin`)
 - **GET `/songs/{id}`**  
   Obtiene los metadatos de una canción por su ID.  
 - **PUT `/songs/{id}`**  
-  Actualiza los campos de una canción (actualización parcial).  
+  Actualiza los campos de una canción (actualización parcial). (Requiere rol `artist` o `admin`)
 - **DELETE `/songs/{id}`**  
   Elimina una canción por su ID.  
+- **GET `/songs/{id}/playback`**
+  Obtiene la URL firmada para reproducir la canción.
+- **GET `/songs/similar-artists/{artist_id}`**
+  Devuelve artistas similares basados en el catálogo.
+- **POST `/songs/{id}/video`**
+  Sube y asocia un video a una canción existente. (Requiere rol `artist` o `admin`)
+- **POST `/songs/suggest-metadata`**
+  Sugiere metadatos para una canción basada en el archivo de audio (AI). (Requiere rol `artist` o `admin`)
+
+#### Administración de Canciones
 - **PUT `/songs/{id}/block`**  
-  Bloquea una canción (cambia su estado a “bloqueada”).  
+  Bloquea una canción (cambia su estado a “bloqueada”). (Admin only)
 - **PUT `/songs/{id}/unblock`**  
-  Desbloquea una canción (cambia su estado a “activa”).
+  Desbloquea una canción (cambia su estado a “activa”). (Admin only)
 
 ---
 
@@ -238,16 +286,56 @@ Cada respuesta de error devuelve un objeto JSON con los siguientes campos:
   Lista las colecciones disponibles con filtros de búsqueda, estado, región, fechas, y ordenamiento.  
 - **GET `/collection/{id}`**  
   Devuelve los metadatos de una colección específica.  
+- **POST `/collection`**
+  Crea una nueva colección. (Requiere rol `artist` o `admin`)
 - **PUT `/collection/{id}`**  
-  Actualiza los campos de una colección.  
+  Actualiza los campos de una colección. (Requiere rol `artist` o `admin`)
 - **DELETE `/collection/{id}`**  
   Elimina una colección por ID.  
-- **PUT `/collection/{id}/block`**  
-  Bloquea una colección (estado: bloqueada).  
-- **PUT `/collection/{id}/unblock`**  
-  Desbloquea una colección (estado: activa).  
 - **GET `/collection/artist/{artist_id}`**  
   Lista las colecciones que incluyen un artista dado, con filtros adicionales.
+- **GET `/collection/{id}/songs`**
+  Devuelve las canciones que pertenecen a una colección.
+
+#### Publicación y Programación
+- **POST `/collection/{id}/publish`**
+  Publica una colección inmediatamente.
+- **POST `/collection/{id}/schedule`**
+  Programa la publicación de una colección para una fecha futura.
+- **POST `/collection/{id}/try-publish`**
+  Intenta publicar una colección programada (usado por el orquestador).
+- **POST `/collection/{id}/cover`**
+  Sube la imagen de portada de la colección.
+
+#### Feeds de Lanzamientos
+- **POST `/collection/new-releases-from-artists`**
+  Obtiene nuevos lanzamientos de una lista de artistas seguidos.
+- **POST `/collection/upcoming-releases-from-artists`**
+  Obtiene próximos lanzamientos (programados) de una lista de artistas.
+
+#### Administración de Colecciones
+- **PUT `/collection/{id}/block`**  
+  Bloquea una colección (estado: bloqueada). (Admin only)
+- **PUT `/collection/{id}/unblock`**  
+  Desbloquea una colección (estado: activa). (Admin only)
+
+---
+
+### Selección del Artista (`/artist-picks`)
+- **GET `/artist-picks/{artist_id}`**
+  Obtiene la selección actual de un artista.
+- **POST `/artist-picks/{artist_id}`**
+  Establece o actualiza la selección del artista. (Artist only)
+- **DELETE `/artist-picks/{artist_id}`**
+  Elimina la selección del artista. (Artist only)
+
+---
+
+### Inteligencia Artificial y Reconocimiento
+- **POST `/ai/generate-cover`**
+  Genera una imagen de portada utilizando IA generativa.
+- **POST `/recognize`**
+  Identifica una canción a partir de un fragmento de audio (Audio Fingerprinting).
 
 ---
 
@@ -255,10 +343,17 @@ Cada respuesta de error devuelve un objeto JSON con los siguientes campos:
 - **GET `/catalog`**  
   Devuelve el catálogo completo combinando canciones y colecciones con filtros y paginación.
 
-
+---
 
 ## Seguridad
+El servicio utiliza JWT (JSON Web Tokens) para la autenticación y autorización.
+- **AuthMiddleware**: Verifica la validez del token y extrae la información del usuario (ID, roles).
+- **Roles**:
+    - `user`: Acceso de lectura básico.
+    - `artist`: Permiso para crear y gestionar su propio contenido.
+    - `admin`: Permiso total para moderación y gestión global.
 
 ## Tests
-
-## Dificultades
+El proyecto incluye tests unitarios y de integración.
+- **Unitarios**: Prueban la lógica de servicios y handlers de forma aislada.
+- **Integración**: Prueban el flujo completo incluyendo base de datos y llamadas HTTP (usando `httptest`).
