@@ -11,6 +11,7 @@
   * [Playlists](servicios/playlists.md)
   * [Playback](servicios/playback.md)
   * [Metrics](servicios/metrics.md)
+  * [Recomendaciones](servicios/recomendaciones.md)
   * [Router](servicios/router.md)
   * [Search](servicios/search.md)
   * [Orchestrator](servicios/orchestrator.md)
