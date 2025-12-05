@@ -14,6 +14,7 @@
   * [Router](servicios/router.md)
   * [Search](servicios/search.md)
   * [Orchestrator](servicios/orchestrator.md)
+  * [Cover IA](servicios/cover_ia.md)
 
 * **Desarrollo**
   * [Problemas y Lecciones](/problemas.md)
@@ -25,6 +26,8 @@
   * [Bitácora 2](/bitacoras/bitacora2.md)
   * [Bitácora 3](/bitacoras/bitacora3.md)
   * [Bitácora 4](/bitacoras/bitacora4.md)
+
+
 
 * **Extras / Demos**
   * [Demos](/extras.md)
