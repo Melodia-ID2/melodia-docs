@@ -91,13 +91,13 @@ El servicio de Daily Mix está modularizado en `app/services/daily_mix/`:
 ### Endpoints Principales
 
 
-* **`GET /made-for-you`**: Obtiene la colección completa de recomendaciones personalizadas del usuario. Si ya está en cache y no pasó "mucho tiempo" desde la ultima generacion, lo devuelve, y sino lo regenera.
+* **`GET /made-for-you`**: Devuelve la colección completa de recomendaciones personalizadas del usuario. Si las recomendaciones están en caché y no ha pasado mucho tiempo desde su última generación, se devuelven directamente. De lo contrario, se regeneran automáticamente.
 
-* **`POST /made-for-you/regenerate`**: Fuerza la regeneración completa de todas las recomendaciones.
+* **`POST /made-for-you/regenerate`**: Fuerza la regeneración completa de todas las recomendaciones personalizadas, ignorando el caché existente.
 
-* **`POST /made-for-you/refresh-from-activity`**: Actualiza Daily Mixes incrementalmente basándose en eventos de actividad del usuario (like, play, follow).
+* **`POST /made-for-you/refresh-from-activity`**: Actualiza los Daily Mixes de forma incremental basándose en eventos de actividad del usuario, como "me gusta", reproducciones o nuevos artistas seguidos.
 
-* **`POST /radio/song/{song_id}`**: Crea una radio continua desde una canción semilla, tomando como referencai canciones del mismo artista y de artistas similares.
+* **`POST /radio/song/{song_id}`**: Genera una radio continua a partir de una canción semilla, incluyendo canciones del mismo artista y de artistas similares.
 
 ## Lógica de Recomendaciones
 
@@ -182,6 +182,13 @@ El servicio también soporta actualización incremental mediante eventos de acti
 - Excluye la canción semilla
 - Maximiza diversidad de géneros
 - Mezcla aleatoria para variedad
+
+### Actualización Incremental
+El servicio admite actualizaciones incrementales basadas en eventos de actividad del usuario. Estas actualizaciones permiten mantener las recomendaciones actualizadas sin necesidad de regenerarlas completamente:
+
+* ``follow``: Se actualizan las recomendaciones cuando el usuario sigue a un nuevo artista, siempre que el caché tenga más de 6 horas de antigüedad.
+* ``like``: Se actualizan las recomendaciones cuando el usuario marca una canción como "me gusta", si el caché tiene más de 5 horas.
+* ``play``: Se actualizan las recomendaciones basándose en nuevas reproducciones, siempre que el caché tenga más de 4 horas.
 
 
 ## Integración con Metrics Service

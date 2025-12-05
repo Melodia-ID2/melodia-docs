@@ -45,23 +45,23 @@ flowchart LR
 
 A continuación, documentamos el proceso de desarrollo de este servicio, que presentó desafíos técnicos significativos.
 
-### 🎯 Objetivo del Proyecto
+### Objetivo del Proyecto
 
 Desarrollar un servicio que permita crear covers musicales utilizando modelos de voz de artistas famosos mediante RVC (Retrieval-based Voice Conversion), separación de stems con Demucs, y procesamiento de audio con librerías especializadas.
 
-### 🚀 Fase 1: Los Inicios Prometedores
+### Fase 1: Los Inicios Prometedores
 
 #### Primeros Pasos (Todo iba bien... por ahora)
 
 - **Modelos de voz**: Descargados fácilmente desde Hugging Face (Michael Jackson, Freddy Mercury, Gustavo Cerati, The Weeknd).
 - **Testing incremental y exitoso**:
-  1. ✅ **Paso 1**: Publicar la canción original completa → ✅ Funcionó
-  2. ✅ **Paso 2**: Extraer y publicar solo el acapella → ✅ Funcionó
-  3. ✅ **Paso 3**: Separar stems (Demucs) y volver a juntar → ✅ Funcionó
+  1. **Paso 1**: Publicar la canción original completa → Funcionó
+  2. **Paso 2**: Extraer y publicar solo el acapella → Funcionó
+  3. **Paso 3**: Separar stems (Demucs) y volver a juntar → Funcionó
   
 **Estado**: Todo marchaba sobre ruedas. El pipeline básico de separación y mezcla funcionaba perfectamente.
 
-### 💥 Fase 2: El Infierno de las Dependencias
+### Fase 2: El Infierno de las Dependencias
 
 #### La Pesadilla de RVC
 
@@ -72,7 +72,7 @@ RVC necesita `torch==2.3.1` → `numpy<1.25` → `fairseq` (necesita numpy>=1.21
 
 **Resultado**: Días enteros resolviendo conflictos de dependencias, solo para encontrar nuevos conflictos.
 
-### 🎮 Fase 3: La Búsqueda de GPU
+### Fase 3: La Búsqueda de GPU
 
 #### Plan Original: Google Cloud Run con GPU
 
@@ -80,11 +80,11 @@ RVC necesita `torch==2.3.1` → `numpy<1.25` → `fairseq` (necesita numpy>=1.21
 **Problema**: GCR NO permite usar GPU sin billing account verificado (restricción anti-fraude).
 **Estado**: Plan A descartado. Sin GPU local disponible para testing.
 
-### 🔬 Fase 4: Google Colab - La Solución Temporal
+### Fase 4: Google Colab - La Solución Temporal
 
 Intentamos trabajar en Colab, pero el entorno tenía conflictos masivos con las dependencias de RVC y cada reinicio requería reinstalar todo. Fue demasiado inestable.
 
-### ⚡ Fase 5: Lightning AI - El Héroe Inesperado
+### Fase 5: Lightning AI - El Héroe Inesperado
 
 Descubrimos Lightning AI, que fue un game-changer:
 1.  **CPU Súper Potente**: Debugging rápido (contenedor levanta en 10s vs 5min local).
@@ -92,11 +92,11 @@ Descubrimos Lightning AI, que fue un game-changer:
 
 **Cómo lo usamos**: Desarrollo en CPU rápida, Testing en GPU.
 
-### 🚀 Fase 6: Script de Deploy en Lightning AI
+### Fase 6: Script de Deploy en Lightning AI
 
 Creamos `lightning_deploy.sh` que levanta el contenedor y expone el servicio vía **ngrok**. Esto nos permitió tener un entorno de "producción" on-demand con GPU para demos.
 
-### 🌩️ Fase 7: De Vuelta a Google Cloud Run
+### Fase 7: De Vuelta a Google Cloud Run
 
 #### El Problema del Startup Timeout
 
@@ -109,7 +109,7 @@ Al intentar deployar en GCR (CPU), el contenedor fallaba porque tardaba 15 minut
 
 **Resultado**: Servicio deployado exitosamente en GCR (CPU). Tarda ~15 min en procesar una canción, pero es gratis y 24/7.
 
-### 🧪 Fase 8: El Dilema del Testing
+### Fase 8: El Dilema del Testing
 
 Intentamos implementar tests automatizados con mocks, pero nos enfrentamos a los mismos problemas de dependencias (pytest importando módulos que requieren CUDA).
 
