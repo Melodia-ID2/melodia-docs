@@ -13,6 +13,8 @@ El servicio centraliza la información musical y expone una API RESTful para cre
 
 Además, incluye endpoints auxiliares para obtener géneros y regiones disponibles, y permite búsquedas y filtrados avanzados por texto, estado, región, rango de fechas, etc.
 
+**Documentación API (Swagger):** [https://catalog-809458893396.us-central1.run.app/swagger/index.html](https://catalog-809458893396.us-central1.run.app/swagger/index.html)
+
 ---
 
 ## Tecnologías Utilizadas
